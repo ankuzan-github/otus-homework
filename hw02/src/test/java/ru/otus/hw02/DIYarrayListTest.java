@@ -44,9 +44,17 @@ public class DIYarrayListTest {
     }
 
     @Test
-    void addAllTest() {
+    void collectionsAddAllTest() {
         var list = new DIYarrayList<String>();
         Collections.addAll(list, testData.toArray(new String[0]));
+        testData.forEach((el) -> assertTrue(list.contains(el)));
+    }
+
+    @Test
+    void listAddAllTest() {
+        var list = new DIYarrayList<String>();
+        list.addAll(testData);
+
         testData.forEach((el) -> assertTrue(list.contains(el)));
     }
 

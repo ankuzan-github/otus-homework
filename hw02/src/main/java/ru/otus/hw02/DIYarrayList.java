@@ -23,7 +23,7 @@ public class DIYarrayList<T> implements List<T> {
         }
     }
 
-    public DIYarrayList(Collection collection) {
+    public DIYarrayList(Collection<T> collection) {
         if (collection.size() > 0) {
             array = collection.toArray();
             capacity = array.length;
@@ -52,7 +52,7 @@ public class DIYarrayList<T> implements List<T> {
             }
         } else {
             for (int i = 0; i < size; i++) {
-                if (array[i] == o)
+                if (array[i].equals(o))
                     return true;
             }
         }
@@ -84,12 +84,12 @@ public class DIYarrayList<T> implements List<T> {
         return true;
     }
 
-    private void newCapacity(int desiredSize) {
-        if (capacity <= desiredSize) {
-            capacity = capacity << 1;
-            if (capacity == 0)
-                capacity = 1;
-            Object[] newArray = new Object[capacity];
+    private void newCapacity(int minCapacity) {
+        if (capacity <= minCapacity) {
+            var newCapacity = capacity + (capacity >> 1);
+            if (newCapacity <= minCapacity)
+                newCapacity = minCapacity + (minCapacity >> 1);
+            Object[] newArray = new Object[newCapacity];
             System.arraycopy(array, 0, newArray, 0, array.length);
             array = newArray;
         }
@@ -107,8 +107,9 @@ public class DIYarrayList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> collection) {
-        newCapacity(size + collection.size());
-        System.arraycopy(collection.toArray(), 0, array, collection.size(), array.length);
+        newCapacity(this.size + collection.size());
+        System.arraycopy(collection.toArray(), 0, array, this.size, collection.size());
+        size += collection.size();
         return true;
     }
 
@@ -135,7 +136,7 @@ public class DIYarrayList<T> implements List<T> {
     @Override
     public T get(int index) {
         if (index < 0 && index >= size)
-            throw new IndexOutOfBoundsException(String.format("Failed to get element by %s'th index. Collection size if %s", index, array.length));
+            throw new IndexOutOfBoundsException(String.format("Failed to get element by %s index. Collection size if %s", index, array.length));
         return (T) array[index];
     }
 
@@ -181,6 +182,7 @@ public class DIYarrayList<T> implements List<T> {
 
     private class DIYIterator implements Iterator<T> {
         int cursor;
+        int lastReturned = -1;
         DIYarrayList<T> list = DIYarrayList.this;
 
         @Override
@@ -190,8 +192,10 @@ public class DIYarrayList<T> implements List<T> {
 
         @Override
         public T next() {
-            if (cursor < size)
-                return list.get(cursor++);
+            if (cursor < size) {
+                lastReturned = ++cursor;
+                return list.get(lastReturned);
+            }
             else
                 throw new NoSuchElementException();
         }
@@ -206,9 +210,10 @@ public class DIYarrayList<T> implements List<T> {
 
         @Override
         public T previous() {
-            cursor -= 1;
-            if (cursor >= 0)
-                return list.get(cursor);
+            if (cursor > 0) {
+                lastReturned = --cursor;
+                return list.get(lastReturned);
+            }
             else
                 throw new NoSuchElementException();
         }
@@ -230,8 +235,10 @@ public class DIYarrayList<T> implements List<T> {
 
         @Override
         public void set(T e) {
-            if ((cursor - 1) >= 0)
-                list.array[cursor - 1] = e;
+            if (lastReturned < 0)
+                throw new IllegalStateException();
+            else
+                list.array[lastReturned] = e;
         }
 
         @Override

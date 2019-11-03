@@ -181,7 +181,7 @@ public class DIYarrayList<T> implements List<T> {
     }
 
     private class DIYIterator implements Iterator<T> {
-        int cursor;
+        int cursor = -1;
         int lastReturned = -1;
         DIYarrayList<T> list = DIYarrayList.this;
 

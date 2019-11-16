@@ -13,7 +13,7 @@
 
     <modules>
         <module>hw01-maven</module>
-        <module>hw02</module>
+        <module>hw02-collections</module>
     </modules>
 
     <packaging>pom</packaging>

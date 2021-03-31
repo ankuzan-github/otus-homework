@@ -29,7 +29,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <com.google.guava.version>28.1-jre</com.google.guava.version>
+        <com.google.guava.version>29.0-jre</com.google.guava.version>
         <org.assertj.version>3.11.1</org.assertj.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <junit5.version>5.5.2</junit5.version>
